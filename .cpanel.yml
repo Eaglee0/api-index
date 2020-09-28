@@ -1,4 +1,4 @@
 deployment:
   tasks:
     - export DEPLOYPATH=/home/nicovale/public_html
-    - /bin/cp -R __sapper__/export $DEPLOYPATH
+    - /bin/cp -R deploy/export $DEPLOYPATH
