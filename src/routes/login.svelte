@@ -1,5 +1,5 @@
 <script>
-  import {logindata} from './stores.js';
+  import { logindata } from "./stores.js";
   let name_s;
   let email_s;
   let password_s;
@@ -7,11 +7,13 @@
   let password_l;
   let name_res = "";
   let loginadatas;
-    $: name = loginadatas.name;
-    $: loginyes = loginadatas.login;
-    const data = logindata.subscribe(value => {
-        loginadatas = value
-    });
+  let login_state = "";
+  let signup_state = "";
+  $: name = loginadatas.name;
+  $: loginyes = loginadatas.login;
+  const data = logindata.subscribe((value) => {
+    loginadatas = value;
+  });
 
   function onlogin() {
     console.log(email_l, password_l);
@@ -19,7 +21,7 @@
       email: email_l,
       password: password_l,
     };
-    name_res = "Caricamento..."
+    name_res = "Caricamento...";
     console.log(JSON.stringify(userdata));
     fetch("http://algorithm-net.tk/loginapi/api/login", {
       method: "POST",
@@ -28,6 +30,7 @@
       .then(function (response) {
         response.json().then(function (data) {
           console.log(data);
+          login_state = "Login: " + data.login;
           name_res = "Benvenuto " + data.name;
           logindata.set(data);
         });
@@ -36,6 +39,7 @@
         console.log("Fetch error");
       });
   }
+  
   function onsignup() {
     console.log(name_s, email_s, password_s);
     let userdata = {
@@ -51,6 +55,7 @@
     })
       .then(function (response) {
         response.json().then(function (data) {
+          signup_state = "Signup: " + data.signup;
           console.log(data);
         });
       })
@@ -60,14 +65,12 @@
   }
 </script>
 
-
 <a href="/">Home</a>
-{#if loginyes == "yes"}
-<a href="/users">User</a>
-<p>Utente: {name}</p>
-
+{#if loginyes == 'yes'}
+  <a href="/users">User</a>
+  <p>Utente: {name}</p>
 {:else}
-<p>esegui l'accesso</p>
+  <p>esegui l'accesso</p>
 {/if}
 <div id="login">
   <h2>Login</h2>
@@ -85,6 +88,7 @@
     placeholder="Your password" />
 
   <button id="submit" on:click={onlogin}>Submit message</button><br />
+  <h2>{login_state}</h2>
   <h2>{name_res}</h2>
 </div><br />
 
@@ -105,5 +109,6 @@
     bind:value={password_s}
     placeholder="Your password" />
 
-  <button on:click={onsignup} id="submit">Submit message</button>
+  <button on:click={onsignup} id="submit">Submit message</button><br>
+  <h2>{signup_state}</h2>
 </div>
